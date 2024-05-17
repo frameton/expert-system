@@ -22,8 +22,8 @@ def get_int_data(path: str):
     return tab[0]
 
 
-def save_current_dimension(params, path):
-    string = str(params["epochs"]) + " " + str(params["learning_rate"])
+def save_display_comments(params, path):
+    string = str(params["display_comments"])
 
     try:
         file1 = open(path, 'w')
@@ -37,4 +37,4 @@ def save_current_dimension(params, path):
 def save_params(params):
     path_dic = get_gen_params_settings_path()
 
-    # save_current_dimension(params, path_dic["current_dimension"])
+    save_display_comments(params, path_dic["display_comments"])

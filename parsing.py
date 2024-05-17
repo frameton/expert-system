@@ -252,7 +252,7 @@ def parenthese_parse(line, line_len, elt, col):
     return error, error_str
 
 
-def check_line(line, count, rules_phase):
+def check_line(line, count, rules_phase, comment_part, params):
     col = 0
     error = 0
     error_str = ""
@@ -262,14 +262,13 @@ def check_line(line, count, rules_phase):
     is_operator = False
     is_parenthese = False
     is_invalid = False
+    implication_operator_count = 0
 
     if rules_phase == False:
-        print(f"{colors.clr.fg.darkgrey}########## RULES ##########{colors.clr.reset}")
-
-    if ("=>" in line) is False and ("<=>" in line) is False:
-        error = 1
-        error_str = "=> or <=> not find in rule."
-        return display_error(-1, error_str, count, line)
+        print("")
+        print("")
+        print(f"{colors.clr.fg.purple}********** RULES **********{colors.clr.reset}")
+        print("")
 
     for elt in line:
 
@@ -295,6 +294,10 @@ def check_line(line, count, rules_phase):
                 return display_error(col, error_str, count, line)
         
         if is_operator is True:
+            if elt == '=':
+                implication_operator_count += 1
+            if implication_operator_count >= 2:
+                return display_error(col, "duplicate detected for implication operator.", count, line)
             error, error_str = operator_parse(line, line_len, elt, col)
             if error == 1:
                 return display_error(col, error_str, count, line)
@@ -306,13 +309,27 @@ def check_line(line, count, rules_phase):
         
         col += 1
     
-    print(f"{line} {colors.clr.fg.green}\u2713{colors.clr.reset}")
+    if ("=>" in line) is False and ("<=>" in line) is False:
+        error = 1
+        error_str = "=> or <=> not find in rule."
+        return display_error(-1, error_str, count, line)
+
+    if params["display_comments"] == 1 and len(comment_part) > 0:
+        print(f"{line} {colors.clr.fg.green}\u2713{colors.clr.reset}", end="          ")
+        print(f"{colors.clr.fg.darkgrey}{comment_part}{colors.clr.reset}")
+    
+    else:
+        print(f"{line} {colors.clr.fg.green}\u2713{colors.clr.reset}")
+
     return 0
 
 
-def check_initial_facts(line, count):
+def check_initial_facts(line, count, comment_part, params):
     print("")
-    print(f"{colors.clr.fg.darkgrey}########## INITIAL FACTS ##########{colors.clr.reset}")
+    print("")
+    print("")
+    print(f"{colors.clr.fg.purple}********** INITIAL FACTS **********{colors.clr.reset}")
+    print("")
 
     if len(line) == 1 and line[0] == '=':
         error_str = "no initial facts found."
@@ -337,15 +354,24 @@ def check_initial_facts(line, count):
                     return display_error(col, error_str, count, line)
             col += 1
 
+    if params["display_comments"] == 1 and len(comment_part) > 0:
+        print(f"{line} {colors.clr.fg.green}\u2713{colors.clr.reset}", end="          ")
+        print(f"{colors.clr.fg.darkgrey}{comment_part}{colors.clr.reset}")
+    
+    else:
         print(f"{line} {colors.clr.fg.green}\u2713{colors.clr.reset}")
-        return 0
+
+    return 0
 
 
 
 
-def check_queries(line, count):
+def check_queries(line, count, comment_part, params):
     print("")
-    print(f"{colors.clr.fg.darkgrey}########## QUERIES ##########{colors.clr.reset}")
+    print("")
+    print("")
+    print(f"{colors.clr.fg.purple}********** QUERIES **********{colors.clr.reset}")
+    print("")
 
     if len(line) == 1 and line[0] == '?':
         error_str = "no queries found."
@@ -370,12 +396,20 @@ def check_queries(line, count):
                     return display_error(col, error_str, count, line)
             col += 1
         
+    if params["display_comments"] == 1 and len(comment_part) > 0:
+        print(f"{line} {colors.clr.fg.green}\u2713{colors.clr.reset}", end="          ")
+        print(f"{colors.clr.fg.darkgrey}{comment_part}{colors.clr.reset}")
+    
+    else:
         print(f"{line} {colors.clr.fg.green}\u2713{colors.clr.reset}")
-        return 0
+    
+    return 0
 
 
 def ex_parsing(params, file_name, datasets_folder_path):
-    print(params)
+    params["tokens"] = []
+    params["initial_facts"] = []
+    params["queries"] = []
     params["parse_error"] = 0
 
     print(colors.clr.fg.yellow, f"Parsing {file_name}...", colors.clr.reset)
@@ -390,16 +424,31 @@ def ex_parsing(params, file_name, datasets_folder_path):
     rules_phase = False
     fact_phase = False
     query_phase = False
+    comment_part = ""
  
     count = 0
     for line in lines:
         count += 1
+        ind = 0
+        for elt in line:
+            if elt == "#":
+                comment_part = line[ind:]
+                line = line[:ind]
+                comment_part = comment_part.strip()
+                comment_part = comment_part.replace("\n", "")
+                break
+            ind += 1
         line = line.strip()
         line = line.replace(" ", "")
         line = line.replace("\n", "")
 
         if len(line) > 0 and line[0] == "?":
             if fact_phase == False:
+                print("")
+                print("")
+                print("")
+                print(f"{colors.clr.fg.purple}********** QUERIES **********{colors.clr.reset}")
+                print("")
                 display_error(-1, "you must initialize initials facts before queries.", count, line)
                 print("")
                 print(colors.clr.fg.red, f"{file_name} parse failed.", colors.clr.reset)
@@ -415,13 +464,7 @@ def ex_parsing(params, file_name, datasets_folder_path):
                 return params
             else:
                 query_phase = True
-                ind = 0
-                for elt in line:
-                    if elt == "#":
-                        line = line[:ind]
-                        break
-                    ind += 1
-                result = check_queries(line, count)
+                result = check_queries(line, count, comment_part, params)
                 if result == 1:
                     print("")
                     print(colors.clr.fg.red, f"{file_name} parse failed.", colors.clr.reset)
@@ -431,7 +474,7 @@ def ex_parsing(params, file_name, datasets_folder_path):
                 else:
                     query = list(line[1:])
 
-        if len(line) > 0 and line[0] == "=":
+        elif len(line) > 0 and line[0] == "=":
             if fact_phase == True:
                 display_error(-1, "the initial facts have already been initialized.", count, line)
                 print("")
@@ -441,13 +484,7 @@ def ex_parsing(params, file_name, datasets_folder_path):
                 return params
             else:
                 fact_phase = True
-                ind = 0
-                for elt in line:
-                    if elt == "#":
-                        line = line[:ind]
-                        break
-                    ind += 1
-                result = check_initial_facts(line, count)
+                result = check_initial_facts(line, count, comment_part, params)
                 if result == 1:
                     print("")
                     print(colors.clr.fg.red, f"{file_name} parse failed.", colors.clr.reset)
@@ -458,14 +495,8 @@ def ex_parsing(params, file_name, datasets_folder_path):
                     facts = list(line[1:])
                 
 
-        if query_phase == False and fact_phase == False and len(line) > 0 and line[0] != "#":
-            ind = 0
-            for elt in line:
-                if elt == "#":
-                    line = line[:ind]
-                    break
-                ind += 1
-            result = check_line(line, count, rules_phase)
+        elif query_phase == False and fact_phase == False and len(line) > 0 and line[0] != "#":
+            result = check_line(line, count, rules_phase, comment_part, params)
             if result == 1:
                 print("")
                 print(colors.clr.fg.red, f"{file_name} parse failed.", colors.clr.reset)
@@ -480,6 +511,8 @@ def ex_parsing(params, file_name, datasets_folder_path):
     params["tokens"] = tokens
     params["initial_facts"] = facts
     params["queries"] = query
+    print("")
+    print("")
     print("")
     print(colors.clr.fg.green, f"{file_name} parse success !", colors.clr.reset)
     print("")
