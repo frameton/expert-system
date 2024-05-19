@@ -1,6 +1,7 @@
 from choose_file import *
 from tools import colors
 from parsing import *
+import os
 
 ############################## ton code ############################
 def your_function(params):
@@ -24,16 +25,26 @@ def your_function(params):
 
 
 def expert_system_program(params):
-    path = "./datasets"
-    answer = choose_file(path)
+    if params["path"] == None:
+        path = "./datasets"
+        answer = choose_file(path)
 
-    if answer is None:
-        print(colors.clr.fg.yellow, "WARNING: no valid file found, check your datasets folder.", colors.clr.reset)
-        return params
+        if answer is None:
+            print(colors.clr.fg.yellow, "WARNING: no valid file found, check your datasets folder.", colors.clr.reset)
+            return params
+        path = "./datasets/" + answer["datasets_file"]
+    
+    else:
+        path = params["path"]
+        if not os.path.exists(path):
+            print(colors.clr.fg.yellow, "WARNING: file not found, check your datasets folder.", colors.clr.reset)
+            return params
 
-    params = ex_parsing(params, answer["datasets_file"], path)
+    params = ex_parsing(params, path)
 
 # execute seulement si le parsing est un reussit
     if params["parse_error"] == 0:
         your_function(params)
+
+    return params
 ###############################################""

@@ -32,7 +32,7 @@ def display_error(col, error_str, count, line):
 
 
 def define_elt_type(elt):
-    letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'i', 'J', 'K', 'L', 'M', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
+    letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
     negative = ['!']
     operators = ['<', '=', '>', "+", '|', '^']
     parentheses = ['(', ')']
@@ -193,6 +193,12 @@ def operator_parse(line, line_len, elt, col):
                 error_str = "an operator cannot be followed by a closing parenthesis."
                 error = 1
                 return error, error_str
+
+        if col > 0 and line_len > 1:
+            if line[col - 1] != '=':
+                error_str = "invalid operator."
+                error = 1
+                return error, error_str
         
         if col == (line_len - 1):
             error_str = "an operator cannot be at the end of a rule."
@@ -279,8 +285,8 @@ def check_line(line, count, rules_phase, comment_part, params):
             return display_error(col, error_str, count, line)
 
         if col == 0:
-            if is_letter is False and elt != '(':
-                error_str = "rules must begin by a letter."
+            if is_letter is False and elt != '(' and elt != '!':
+                error_str = "rules must begin by a letter, negative symbole or opening parenthesis."
                 return display_error(col, error_str, count, line)
         
         if is_letter is True:
@@ -336,7 +342,7 @@ def check_initial_facts(line, count, comment_part, params):
         return display_error(-1, error_str, count, line)
 
     else:
-        letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'i', 'J', 'K', 'L', 'M', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
+        letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
         tmp = []
         col = 0
         for elt in line:
@@ -378,7 +384,7 @@ def check_queries(line, count, comment_part, params):
         return display_error(-1, error_str, count, line)
 
     else:
-        letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'i', 'J', 'K', 'L', 'M', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
+        letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
         tmp = []
         col = 0
         for elt in line:
@@ -406,18 +412,37 @@ def check_queries(line, count, comment_part, params):
     return 0
 
 
-def ex_parsing(params, file_name, datasets_folder_path):
+def create_tokens(line):
+    new_list = []
+    ref = ["+", "|", "^", '(', ')']
+    count = 0
+    while count < len(line):
+        if (line[count].isalpha() is True and line[count].isupper() is True) or line[count] in ref is True:
+            new_list.append(line[count])
+        elif line[count] == '!' or line[count] == '=':
+            string = line[count] + line[count + 1]
+            new_list.append(string)
+            count += 1
+        elif line[count] == '<':
+            string = line[count] + line[count + 1] + line[count + 2]
+            new_list.append(string)
+            count += 2
+        
+        count += 1
+    
+    return new_list
+
+
+def ex_parsing(params, path):
     params["tokens"] = []
     params["initial_facts"] = []
     params["queries"] = []
     params["parse_error"] = 0
 
-    print(colors.clr.fg.yellow, f"Parsing {file_name}...", colors.clr.reset)
+    print(colors.clr.fg.yellow, f"Parsing {path}...", colors.clr.reset)
     print("")
 
-    path = datasets_folder_path + "/" + file_name
     file = open(path, 'r')
-    lines = file.readlines()
     tokens = []
     query = []
     facts = []
@@ -427,7 +452,12 @@ def ex_parsing(params, file_name, datasets_folder_path):
     comment_part = ""
  
     count = 0
-    for line in lines:
+    while True:
+        line = file.readline()
+
+        if not line:
+            break
+
         count += 1
         ind = 0
         for elt in line:
@@ -451,25 +481,28 @@ def ex_parsing(params, file_name, datasets_folder_path):
                 print("")
                 display_error(-1, "you must initialize initials facts before queries.", count, line)
                 print("")
-                print(colors.clr.fg.red, f"{file_name} parse failed.", colors.clr.reset)
+                print(colors.clr.fg.red, f"{path} parse failed.", colors.clr.reset)
                 print("")
                 params["parse_error"] = 1
+                file.close()
                 return params
             if query_phase == True:
                 display_error(-1, "queries have already been initialized.", count, line)
                 print("")
-                print(colors.clr.fg.red, f"{file_name} parse failed.", colors.clr.reset)
+                print(colors.clr.fg.red, f"{path} parse failed.", colors.clr.reset)
                 print("")
                 params["parse_error"] = 1
+                file.close()
                 return params
             else:
                 query_phase = True
                 result = check_queries(line, count, comment_part, params)
                 if result == 1:
                     print("")
-                    print(colors.clr.fg.red, f"{file_name} parse failed.", colors.clr.reset)
+                    print(colors.clr.fg.red, f"{path} parse failed.", colors.clr.reset)
                     print("")
                     params["parse_error"] = 1
+                    file.close()
                     return params
                 else:
                     query = list(line[1:])
@@ -478,18 +511,20 @@ def ex_parsing(params, file_name, datasets_folder_path):
             if fact_phase == True:
                 display_error(-1, "the initial facts have already been initialized.", count, line)
                 print("")
-                print(colors.clr.fg.red, f"{file_name} parse failed.", colors.clr.reset)
+                print(colors.clr.fg.red, f"{path} parse failed.", colors.clr.reset)
                 print("")
                 params["parse_error"] = 1
+                file.close()
                 return params
             else:
                 fact_phase = True
                 result = check_initial_facts(line, count, comment_part, params)
                 if result == 1:
                     print("")
-                    print(colors.clr.fg.red, f"{file_name} parse failed.", colors.clr.reset)
+                    print(colors.clr.fg.red, f"{path} parse failed.", colors.clr.reset)
                     print("")
                     params["parse_error"] = 1
+                    file.close()
                     return params
                 else:
                     facts = list(line[1:])
@@ -499,12 +534,13 @@ def ex_parsing(params, file_name, datasets_folder_path):
             result = check_line(line, count, rules_phase, comment_part, params)
             if result == 1:
                 print("")
-                print(colors.clr.fg.red, f"{file_name} parse failed.", colors.clr.reset)
+                print(colors.clr.fg.red, f"{path} parse failed.", colors.clr.reset)
                 print("")
                 params["parse_error"] = 1
+                file.close()
                 return params
             else:
-                new_list = list(line)
+                new_list = create_tokens(line)
                 tokens.append(new_list)
                 rules_phase = True
     
@@ -514,6 +550,7 @@ def ex_parsing(params, file_name, datasets_folder_path):
     print("")
     print("")
     print("")
-    print(colors.clr.fg.green, f"{file_name} parse success !", colors.clr.reset)
+    print(colors.clr.fg.green, f"{path} parse success !", colors.clr.reset)
     print("")
+    file.close()
     return params

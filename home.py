@@ -28,6 +28,7 @@ def home_step_display():
 
 def home_step():
     params = get_gen_params()
+    params["path"] = None
 
     while True:
         answer = home_step_display()

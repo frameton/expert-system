@@ -2,9 +2,7 @@ C => E
 A + B + C => D 
 A | B => C 
 
-
 =ABG
 =ABGS
 
 ?GVX
-
