@@ -1,0 +1,37 @@
+# à utiliser sur http://lab.antlr.org/
+
+grammar CombinedGrammar;
+
+input:
+    (NEWLINE)*
+    statement+ (NEWLINE)*
+    facts (NEWLINE)*
+    query (NEWLINE)*
+    EOF
+    ;
+
+statement: implication NEWLINE ;
+implication: xor (IMPLIES|IFF) xor ;
+xor: or (XOR or)* ;
+or: and (OR and)* ;
+and: not (AND not)* ;
+not: (NOT)* atom ;
+atom: LPAREN xor RPAREN | ID;
+
+facts: EQUALS ID+ NEWLINE ;
+queries: QUESTION ID+ ;
+
+AND : '+' ;
+OR : '|' ;
+XOR: '^';
+NOT : '!' ;
+EQUALS : '=' ;
+QUESTION: '?' ;
+IMPLIES: '=>' ;
+IFF: '<=>' ;
+LPAREN : '(' ;
+RPAREN : ')' ;
+ID: [A-Z] ;
+WS: [ \t\r\f]+ -> skip ;
+NEWLINE: [\n] ;
+COMMENT: '#' ~[\n]* -> skip ;

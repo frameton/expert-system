@@ -1,0 +1,56 @@
+# This is a comment
+A + B => C | D # End of statement comment
+# Another comment
+E ^ F <=> (G + H)
+
+!A | B => C ^ D # Comment at the end
+E + F => (G | H)
+# Comment here
+(A ^ B) | C => D + E # Another comment at the end
+F | (G + H) ^ I => J ^ A
+
+!B ^ !(C + D) | E => F ^ G # End of statement comment
+H | I + (J ^ A) => (B + C)
+# Another comment
+!(D ^ E) + F | G => H ^ I
+
+J | A + B ^ !C => D ^ E # Comment at the end
+(D ^ E | F) + G => H | I
+# Comment here
+J + (A ^ B | C) => (D + E)
+
+!F ^ G | !(H + I) => J ^ A # End of statement comment
+(D + E) | (F ^ G) => H | I
+# Another comment
+!(J | A + B) ^ C => (D ^ E)
+
+F ^ !(G | H + I) => J | A # Comment at the end
+(D ^ E | F + G) => !H
+I | J + A ^ B <=> C ^ D
+# Comment here
+!E | F + G ^ H <=> I | J # End of statement comment
+
+(A ^ B) + C | D <=> E ^ F
+G | (H ^ I) + J <=> A | B # Comment at the end
+# Another comment
+!C ^ !(D | E) + F <=> (G ^ H)
+
+I | J + (A ^ B) <=> C | D # End of statement comment
+!(E ^ F) + G | H <=> I | J
+A | B + C ^ !D <=> (E | F)
+# Comment here
+(G ^ H | I) + J <=> A | B # End of statement comment
+
+C | (D ^ E + F) <=> G | H
+!I + J | !(A + B) ^ C <=> D | E # Comment at the end
+(E ^ F) | (G + H) <=> I | J
+# Another comment
+!(A | B + C) ^ D <=> E ^ F
+
+G ^ !(H | I + J) <=> A | B # End of statement comment
+(E + F | G ^ H) <=> !I
+# This is the end of the statements
+
+= A B C D E # These are the facts
+
+? F G H I J # These are the queries
