@@ -1,8 +1,9 @@
-from intro import display_42_logo
-from home import *
+from app_format_src.intro import display_42_logo
+from app_format_src.home import home_step
+from app_format_src.get_gen_params import get_gen_params
+from app_format_src.save_params import save_params
+from expert_system_program import expert_system_program
 import argparse
-from get_gen_params import *
-from save_params import *
 import sys
 
 

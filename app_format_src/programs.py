@@ -1,8 +1,8 @@
 import inquirer
 import os
 from tools import colors
-from expert_system_program import *
-from datasets_test_program import *
+from expert_system_program import expert_system_program
+from app_format_src.datasets_test_program import datasets_test_program
 
 def programs_step_display():
 	print(colors.clr.fg.cyan)

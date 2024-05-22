@@ -1,6 +1,6 @@
-from choose_file import *
+from app_format_src.choose_file import choose_file
 from tools import colors
-from parsing import *
+from parsing.parsing import ex_parsing
 import os
 
 ############################## ton code ############################

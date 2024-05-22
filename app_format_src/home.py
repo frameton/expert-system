@@ -1,7 +1,8 @@
-from programs import *
-from settings import *
-from get_gen_params import *
-from save_params import *
+from app_format_src.programs import programs_step
+from app_format_src.get_gen_params import get_gen_params
+from app_format_src.save_params import save_params
+from app_format_src.settings import settings_step
+from tools import colors
 import inquirer
 
 

@@ -1,6 +1,6 @@
 import inquirer
 from tools import colors
-from display_comments_settings import *
+from app_format_src.display_comments_settings import display_comments_settings
 
 
 def settings_step_display():
