@@ -1,7 +1,7 @@
 import pandas as pd
 import os
 from tools import colors
-from get_gen_params_settings_path import *
+from app_format_src.get_gen_params_settings_path import get_gen_params_settings_path
 
 
 def get_int_data(path: str):
@@ -75,7 +75,11 @@ def get_gen_params():
     path_dic = get_gen_params_settings_path()
 
     src_dic = {}
-    #src_dic["dynamic_graph"] = get_int_data(path_dic["dynamic_graph"])
+    src_dic["tokens"] = None
+    src_dic["initial_facts"] = None
+    src_dic["queries"] = None
+    src_dic["parse_error"] = 0
+    src_dic["display_comments"] = get_int_data(path_dic["display_comments"])
     # src_dic["learning_rate"] = get_current_learning_rate_data(path_dic["current_dimension"])
     # src_dic["epochs"] = get_current_epochs_data(path_dic["current_dimension"])
 

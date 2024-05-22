@@ -1,5 +1,6 @@
 import inquirer
 from tools import colors
+from app_format_src.display_comments_settings import display_comments_settings
 
 
 def settings_step_display():
@@ -17,7 +18,7 @@ def settings_step_display():
     inquirer.List(
         "settings_step_answer",
         message="Dslr settings",
-        choices=["Settings1", "Back"],
+        choices=["Display comments", "Back"],
     ),
 	]
 	return inquirer.prompt(questions)
@@ -26,8 +27,8 @@ def settings_step_display():
 def settings_step(params):
     while True:
         answer = settings_step_display()
-        if answer["settings_step_answer"] == "Settings1":
-            print("Settings1")
+        if answer["settings_step_answer"] == "Display comments":
+            params = display_comments_settings(params)
         if answer["settings_step_answer"] == "Back":
             break
     return params

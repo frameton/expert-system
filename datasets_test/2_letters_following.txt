@@ -1,0 +1,8 @@
+C => E 
+AH + B + C => D 
+A | B => C 
+
+
+=ABG
+
+?GVX

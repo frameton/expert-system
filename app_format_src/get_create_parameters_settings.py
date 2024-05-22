@@ -1,7 +1,7 @@
 import pandas as pd
 import os
 from tools import colors
-from get_parameters_settings_path import *
+from app_format_src.get_parameters_settings_path import get_gen_params_settings_path
 
 
 def get_int_data(path: str):
