@@ -6,7 +6,7 @@ input:
     (NEWLINE)*
     statement+ (NEWLINE)*
     facts (NEWLINE)*
-    query (NEWLINE)*
+    goals (NEWLINE)*
     EOF
     ;
 
@@ -19,7 +19,7 @@ not: (NOT)* atom ;
 atom: LPAREN xor RPAREN | ID;
 
 facts: EQUALS ID* NEWLINE ;
-queries: QUESTION ID+ ;
+goals: QUESTION ID+ ;
 
 AND : '+' ;
 OR : '|' ;
