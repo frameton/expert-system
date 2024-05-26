@@ -1,34 +1,8 @@
 from tools import colors
-
-
-def display_error(col, error_str, count, line):
-    str_count = str(count)
-    str_col = str(col)
-    if col == -1:
-        print(line, f"{colors.clr.fg.lightred}\u2717{colors.clr.reset}")
-        for elt in line:
-            print(f"{colors.clr.fg.red}^{colors.clr.reset}", end="")
-        print("")
-        print(colors.clr.fg.red, f"Parsing error: [line: {str_count}] {error_str}", colors.clr.reset)
-    else:
-        ind = 0
-        for elt in line:
-            if ind == col:
-                print(f"{colors.clr.bg.red}{elt}{colors.clr.reset}", end="")
-            else:
-                print(f"{elt}", end="")
-            ind += 1
-        print(f" {colors.clr.fg.lightred}\u2717{colors.clr.reset}")
-        ind = 0
-        for elt in line:
-            if ind == col:
-                print(f"{colors.clr.fg.red}^{colors.clr.reset}", end="")
-            else:
-                print(" ", end="")
-            ind += 1
-        print("")
-        print(colors.clr.fg.red, f"Parsing error:[line: {str_count}][col: {str_col}] {error_str}", colors.clr.reset)
-    return 1
+from parsing.create_tokens import create_tokens
+from parsing.display_error import display_error
+from parsing.token_parentheses import check_parenthese
+from parsing.duplicate_negative_symbol import sort_negative_symbol, search_end_negative_series
 
 
 def define_elt_type(elt):
@@ -227,10 +201,10 @@ def parenthese_parse(line, line_len, elt, col):
                 error = 1
                 return error, error_str
             
-            if line[col + 1] == ')':
-                error_str = "an opening parenthesis cannot be followed by a closing parenthesis."
-                error = 1
-                return error, error_str
+            # if line[col + 1] == ')':
+            #     error_str = "an opening parenthesis cannot be followed by a closing parenthesis."
+            #     error = 1
+            #     return error, error_str
     
         if col == (line_len - 1):
             error_str = "an opening parenthesis cannot be at the end of a rule."
@@ -258,7 +232,7 @@ def parenthese_parse(line, line_len, elt, col):
     return error, error_str
 
 
-def check_line(line, count, rules_phase, comment_part, params):
+def check_line(line, count, rules_phase):
     col = 0
     error = 0
     error_str = ""
@@ -300,10 +274,10 @@ def check_line(line, count, rules_phase, comment_part, params):
                 return display_error(col, error_str, count, line)
         
         if is_operator is True:
-            if elt == '=':
-                implication_operator_count += 1
-            if implication_operator_count >= 2:
-                return display_error(col, "duplicate detected for implication operator.", count, line)
+            # if elt == '=':
+            #     implication_operator_count += 1
+            # if implication_operator_count >= 2:
+            #     return display_error(col, "duplicate detected for implication operator.", count, line)
             error, error_str = operator_parse(line, line_len, elt, col)
             if error == 1:
                 return display_error(col, error_str, count, line)
@@ -320,12 +294,9 @@ def check_line(line, count, rules_phase, comment_part, params):
         error_str = "=> or <=> not find in rule."
         return display_error(-1, error_str, count, line)
 
-    if params["display_comments"] == 1 and len(comment_part) > 0:
-        print(f"{line} {colors.clr.fg.green}\u2713{colors.clr.reset}", end="          ")
-        print(f"{colors.clr.fg.darkgrey}{comment_part}{colors.clr.reset}")
-    
-    else:
-        print(f"{line} {colors.clr.fg.green}\u2713{colors.clr.reset}")
+    line = check_parenthese(line, count)
+    if line == 1:
+        return 1
 
     return 0
 
@@ -408,69 +379,6 @@ def check_queries(line, count, comment_part, params):
         print(f"{line} {colors.clr.fg.green}\u2713{colors.clr.reset}")
     
     return 0
-
-
-def create_tokens(line):
-    new_list = []
-    ref = ["+", "|", "^", '(', ')']
-    count = 0
-    while count < len(line):
-        if (line[count].isalpha() is True and line[count].isupper() is True) or line[count] in ref is True:
-            new_list.append(line[count])
-        elif line[count] == '!' or line[count] == '=':
-            string = line[count] + line[count + 1]
-            new_list.append(string)
-            count += 1
-        elif line[count] == '<':
-            string = line[count] + line[count + 1] + line[count + 2]
-            new_list.append(string)
-            count += 2
-        
-        count += 1
-    
-    return new_list
-
-
-def search_end_negative_series(line, start):
-    count = start
-    series_len = 0
-    while count < len(line):
-        if line[count] != '!':
-            break
-        series_len += 1
-        count += 1
-    
-    return series_len, count
-
-
-def sort_negative_symbol(line):
-    count = 0
-    start = 0
-    end = 0
-
-    line = line.strip()
-    line = line.replace(" ", "")
-    line = line.replace("\n", "")
-    line = list(line)
-
-    while count < len(line):
-        if line[count] == '!':
-            start = count
-            series_len, end = search_end_negative_series(line, start)
-            if (series_len % 2) == 0:
-                while start < end:
-                    line[start] = ' '
-                    start += 1
-            else:
-                while start < (end - 1):
-                    line[start] = ' '
-                    start += 1
-        count += 1
-    
-    line = ''.join(line)
-    return line
-
-
 
 
 def ex_parsing(params, path):
@@ -572,7 +480,7 @@ def ex_parsing(params, path):
                 
 
         elif query_phase == False and fact_phase == False and len(line) > 0 and line[0] != "#":
-            result = check_line(line, count, rules_phase, comment_part, params)
+            result = check_line(line, count, rules_phase)
             if result == 1:
                 print("")
                 print(colors.clr.fg.red, f"{path} parse failed.", colors.clr.reset)
@@ -581,9 +489,21 @@ def ex_parsing(params, path):
                 file.close()
                 return params
             else:
-                new_list = create_tokens(line)
+                new_list = create_tokens(line, count)
+                if new_list == 1:
+                    params["parse_error"] = 1
+                    file.close()
+                    return params
+
                 tokens.append(new_list)
                 rules_phase = True
+
+                if params["display_comments"] == 1 and len(comment_part) > 0:
+                    print(f"{line} {colors.clr.fg.green}\u2713{colors.clr.reset}", end="          ")
+                    print(f"{colors.clr.fg.darkgrey}{comment_part}{colors.clr.reset}")
+    
+                else:
+                    print(f"{line} {colors.clr.fg.green}\u2713{colors.clr.reset}")
     
     params["tokens"] = tokens
     params["initial_facts"] = facts
