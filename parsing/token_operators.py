@@ -2,6 +2,25 @@ from tools import colors
 from parsing.display_error import display_error
 
 
+def check_negative_symbole_nested_lists(new_list):
+    col = 0
+
+    for elt in new_list:
+        if type(elt) is list:
+            elt = check_negative_symbole_nested_lists(elt)
+        else:
+            if elt == '!':
+                new_list[col] = []
+                new_list[col].append('!')
+                new_list[col].append(new_list[col + 1])
+                new_list.pop(col + 1)
+
+        col += 1
+
+    return new_list
+
+
+
 def create_operators_nested_lists(new_list):
     count = 0
 

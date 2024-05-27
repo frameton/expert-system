@@ -78,19 +78,24 @@ def negative_parse(line, line_len, elt, col):
     if col < (line_len - 1):
         next_is_letter, next_is_negative, next_is_operator, next_is_parenthese, next_is_invalid = define_elt_type(line[col + 1])
         if next_is_negative is True:
-            error_str = "a negative symbol can only be followed by a letter."
+            error_str = "a negative symbol can only be followed by a letter or open parenthesis."
             error = 1
             return error, error_str
         
         if next_is_operator is True:
-            error_str = "a negative symbol can only be followed by a letter."
+            error_str = "a negative symbol can only be followed by a letter or open parenthesis."
             error = 1
             return error, error_str
         
-        if next_is_parenthese is True:
-            error_str = "a negative symbol can only be followed by a letter."
+        if line[col + 1] == ')':
+            error_str = "a negative symbol can only be followed by a letter or open parenthesis."
             error = 1
             return error, error_str
+
+        # if next_is_parenthese is True:
+        #     error_str = "a negative symbol can only be followed by a letter or open parenthesis."
+        #     error = 1
+        #     return error, error_str
     
     if col == (line_len - 1):
         error_str = "a negative symbol cannot be at the end of a rule."
@@ -489,7 +494,7 @@ def ex_parsing(params, path):
                 file.close()
                 return params
             else:
-                new_list = create_tokens(line, count)
+                new_list = create_tokens(line, count, params, comment_part)
                 if new_list == 1:
                     params["parse_error"] = 1
                     file.close()
@@ -498,12 +503,6 @@ def ex_parsing(params, path):
                 tokens.append(new_list)
                 rules_phase = True
 
-                if params["display_comments"] == 1 and len(comment_part) > 0:
-                    print(f"{line} {colors.clr.fg.green}\u2713{colors.clr.reset}", end="          ")
-                    print(f"{colors.clr.fg.darkgrey}{comment_part}{colors.clr.reset}")
-    
-                else:
-                    print(f"{line} {colors.clr.fg.green}\u2713{colors.clr.reset}")
     
     params["tokens"] = tokens
     params["initial_facts"] = facts
