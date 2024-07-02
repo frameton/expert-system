@@ -25,8 +25,6 @@ def expert_system_program(params):
 
 # execute seulement si le parsing est un reussit
     if params["parse_error"] == 0:
-        pass
-        print(params)
         engine = InferenceEngine(params["tokens"], params["initial_facts"], params["queries"])
         engine.infer_goals()
         engine.print_facts()
