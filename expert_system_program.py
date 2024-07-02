@@ -2,26 +2,7 @@ from app_format_src.choose_file import choose_file
 from tools import colors
 from parsing.parsing import ex_parsing
 import os
-
-############################## ton code ############################
-def your_function(params):
-    # params["tokens"] -> tableau de tableaux avec tous les tokens ex: [['C', '=', '>', 'E'], ['A', '+', 'B', '+', 'C', '=', '>', 'D']]
-    # params["initial_facts"] -> tableau des faits initiaux ex: ['A', 'G', 'P']
-    # params[queries] -> tableau des queries ex: ['K', 'M', 'S']
-    print(params)
-
-
-
-
-
-
-
-######################################################################
-
-
-
-
-
+from inference_engine.engine import InferenceEngine
 
 
 def expert_system_program(params):
@@ -44,7 +25,11 @@ def expert_system_program(params):
 
 # execute seulement si le parsing est un reussit
     if params["parse_error"] == 0:
-        your_function(params)
+        pass
+        print(params)
+        engine = InferenceEngine(params["tokens"], params["initial_facts"], params["queries"])
+        engine.infer_goals()
+        engine.print_facts()
 
     return params
 ###############################################""
