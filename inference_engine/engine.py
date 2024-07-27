@@ -1,7 +1,7 @@
-from fact import Fact
-from op import Operator
-from rule import Rule
-from graph import Graph
+from inference_engine.fact import Fact
+from inference_engine.op import Operator
+from inference_engine.rule import Rule
+from inference_engine.graph import Graph
 
 class InferenceEngine():
     def __init__(self, rules: list[list], facts: list[str], goals: list[str], print=False):
@@ -323,21 +323,21 @@ class InferenceEngine():
         for fact in self.facts.values():
             print(fact.name, ':', fact.value)
 
-# if __name__ == '__main__':
-#     rules = [
-#         # [['A', '+', 'B'], '=>', 'D'],
-#         # [['A', '+', 'B'], '=>', ['C', '+', 'D']],
-#         [['A', '+', 'B'], '=>', ['C', '|', ['A', '|', 'D'], '|', ['D', '^', 'C']]],
-#         # [['A', '+', 'B'], '=>', ['C', '^', 'D']],
-#         ['B', '=>', ['!', 'C']]
-#     ]
-#     engine = InferenceEngine(
-#         rules,
-#         facts=['A', 'B'],
-#         goals=['D'],
-#         # print=True
-#     )
-#     engine.infer_goals()
+if __name__ == '__main__':
+    rules = [
+        # [['A', '+', 'B'], '=>', 'D'],
+        # [['A', '+', 'B'], '=>', ['C', '+', 'D']],
+        [['A', '+', 'B'], '=>', ['C', '|', ['A', '|', 'D'], '|', ['D', '^', 'C']]],
+        # [['A', '+', 'B'], '=>', ['C', '^', 'D']],
+        ['B', '=>', ['!', 'C']]
+    ]
+    engine = InferenceEngine(
+        rules,
+        facts=['A', 'B'],
+        goals=['D'],
+        # print=True
+    )
+    engine.infer_goals()
 
-#     engine.print_facts()
+    engine.print_facts()
 

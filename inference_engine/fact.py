@@ -1,5 +1,5 @@
 from typing import Self
-from node import Node
+from inference_engine.node import Node
 
 class Fact(Node):
     def __init__(self, name, value: bool | None = None):

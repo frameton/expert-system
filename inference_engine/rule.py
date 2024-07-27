@@ -1,6 +1,6 @@
-from node import Node
-from fact import Fact
-from op import Operator
+from inference_engine.node import Node
+from inference_engine.fact import Fact
+from inference_engine.op import Operator
 
 class Rule(Node):
     def __init__(self, expression: list, conditions:Fact | Operator=Fact(''), conclusions:Fact | Operator=Fact('')):

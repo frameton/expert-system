@@ -1,5 +1,5 @@
-from fact import Fact
-from node import Node
+from inference_engine.fact import Fact
+from inference_engine.node import Node
 
 class Operator(Node):
     def __init__(self, operator, expression=None, is_in_conclusion=False):

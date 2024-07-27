@@ -2,10 +2,10 @@ from copy import copy
 import networkx as nx
 import matplotlib.pyplot as plt
 from networkx.drawing.nx_pydot import graphviz_layout
-from op import Operator
-from node import Node
-from rule import Rule
-from fact import Fact
+from inference_engine.op import Operator
+from inference_engine.node import Node
+from inference_engine.rule import Rule
+from inference_engine.fact import Fact
 
 class Graph():
     def __init__(self):
