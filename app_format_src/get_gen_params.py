@@ -81,6 +81,8 @@ def get_gen_params():
     src_dic["parse_error"] = 0
     src_dic["display_comments"] = get_int_data(path_dic["display_comments"])
     src_dic["display_nested_list"] = get_int_data(path_dic["display_nested_list"])
+    src_dic["interactive_facts"] = get_int_data(path_dic["interactive_facts"])
+    src_dic["interactive_queries"] = get_int_data(path_dic["interactive_queries"])
     # src_dic["learning_rate"] = get_current_learning_rate_data(path_dic["current_dimension"])
     # src_dic["epochs"] = get_current_epochs_data(path_dic["current_dimension"])
 

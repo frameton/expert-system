@@ -502,6 +502,11 @@ def ex_parsing(params, path):
 
                 tokens.append(new_list)
                 rules_phase = True
+        
+        if params["display_comments"] == 1 and len(line) == 0 and len(comment_part) > 0:
+            print("")
+            print(f"{colors.clr.fg.darkgrey}{comment_part}{colors.clr.reset}")
+            print("")
 
     
     params["tokens"] = tokens

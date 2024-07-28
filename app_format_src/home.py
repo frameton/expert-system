@@ -12,7 +12,7 @@ def home_step_display():
 	print("")
 	print("####################################################################################################################")
 	print("")
-	print("                                         Welcome to Total Expert System !                                          ")
+	print("                                              Welcome to Expert System !                                          ")
 	print("")
 	print("")
 	print("")
