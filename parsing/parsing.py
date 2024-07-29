@@ -237,7 +237,7 @@ def parenthese_parse(line, line_len, elt, col):
     return error, error_str
 
 
-def check_line(line, count, rules_phase):
+def check_line(line, count, rules_phase, dataset_letters, reference_letters):
     col = 0
     error = 0
     error_str = ""
@@ -248,6 +248,7 @@ def check_line(line, count, rules_phase):
     is_parenthese = False
     is_invalid = False
     implication_operator_count = 0
+
 
     if rules_phase == False:
         print("")
@@ -272,6 +273,10 @@ def check_line(line, count, rules_phase):
             error, error_str = letter_parse(line, line_len, elt, col)
             if error == 1:
                 return display_error(col, error_str, count, line)
+            else:
+                if (elt in reference_letters) == True:
+                    index = reference_letters.remove(elt)
+                    dataset_letters.append(elt)
         
         if is_negative is True:
             error, error_str = negative_parse(line, line_len, elt, col)
@@ -301,9 +306,9 @@ def check_line(line, count, rules_phase):
 
     line = check_parenthese(line, count)
     if line == 1:
-        return 1
+        return 1, datasets_letters
 
-    return 0
+    return 0, dataset_letters, reference_letters
 
 
 def check_initial_facts(line, count, comment_part, params):
@@ -387,6 +392,7 @@ def check_queries(line, count, comment_part, params):
 
 
 def ex_parsing(params, path):
+    params["dataset_letters"] = []
     params["tokens"] = []
     params["initial_facts"] = []
     params["queries"] = []
@@ -403,6 +409,7 @@ def ex_parsing(params, path):
     fact_phase = False
     query_phase = False
     comment_part = ""
+    reference_letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
  
     count = 0
     while True:
@@ -485,7 +492,7 @@ def ex_parsing(params, path):
                 
 
         elif query_phase == False and fact_phase == False and len(line) > 0 and line[0] != "#":
-            result = check_line(line, count, rules_phase)
+            result, params['dataset_letters'], reference_letters = check_line(line, count, rules_phase, params["dataset_letters"], reference_letters)
             if result == 1:
                 print("")
                 print(colors.clr.fg.red, f"{path} parse failed.", colors.clr.reset)

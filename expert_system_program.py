@@ -1,6 +1,8 @@
 from app_format_src.choose_file import choose_file
 from tools import colors
 from parsing.parsing import ex_parsing
+from parsing.custom_facts import get_user_facts
+from parsing.custom_queries import get_user_queries
 import os
 from inference_engine.engine import InferenceEngine
 
@@ -22,6 +24,14 @@ def expert_system_program(params):
             return params
 
     params = ex_parsing(params, path)
+
+    if (params['interactive_facts']):
+        params["initial_facts"] = get_user_facts(params)
+
+    if (params['interactive_queries']):
+        params["queries"] = get_user_queries(params)
+
+
 
 # execute seulement si le parsing est un reussit
     if params["parse_error"] == 0:
