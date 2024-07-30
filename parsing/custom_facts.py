@@ -37,7 +37,7 @@ def get_user_facts(params):
     while validation == False:
         print("")
         print(colors.clr.fg.yellow, "------------------------- Choose your own facts ! (ex: AEG) -------------------------")
-        print(colors.clr.fg.yellow, f"Letter(s) found in dataset: {letters_list}")
+        print(colors.clr.fg.yellow, f"Letter(s) found in dataset: {' '.join(letters_list)}")
         print("")
         facts = input("Facts: ")
         facts = facts.strip()

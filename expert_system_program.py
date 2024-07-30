@@ -7,6 +7,33 @@ import os
 from inference_engine.engine import InferenceEngine
 
 
+def display_results(facts):
+    false_facts = []
+    true_facts = []
+    none_facts = []
+
+    for fact in facts:
+        if fact.value == False:
+            false_facts.append(fact.name)
+        elif fact.value == True:
+            true_facts.append(fact.name)
+        else:
+            none_facts.append(fact.name)
+    
+    print("")
+    print("")
+    print(colors.clr.fg.green, "--------------------------------------------------------------------------")
+    print(f"  True facts ({len(true_facts)}) \u2192 ", " ".join(true_facts))
+    print(colors.clr.fg.green, "--------------------------------------------------------------------------")
+    print(colors.clr.fg.red, "--------------------------------------------------------------------------")
+    print(f"  False facts ({len(false_facts)}) \u2192 " , " ".join(false_facts))
+    print(colors.clr.fg.red, "--------------------------------------------------------------------------")
+    print(colors.clr.fg.lightgrey, "--------------------------------------------------------------------------")
+    print(f"  Unknown facts ({len(none_facts)}) \u2192 ", " ".join(none_facts))
+    print(colors.clr.fg.lightgrey, "--------------------------------------------------------------------------", colors.clr.reset)
+    print("")
+    print("")
+
 def expert_system_program(params):
     if params["path"] == None:
         path = "./datasets"
@@ -37,7 +64,9 @@ def expert_system_program(params):
     if params["parse_error"] == 0:
         engine = InferenceEngine(params["tokens"], params["initial_facts"], params["queries"])
         engine.infer_goals()
-        engine.print_facts()
+        facts_results = engine.print_facts()
+
+        display_results(facts_results)
 
     return params
 ###############################################""

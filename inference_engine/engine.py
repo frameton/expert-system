@@ -320,8 +320,9 @@ class InferenceEngine():
 
 
     def print_facts(self):
-        for fact in self.facts.values():
-            print(fact.name, ':', fact.value)
+        # for fact in self.facts.values():
+        #     print(fact.name, ':', fact.value)
+        return self.facts.values()
 
 if __name__ == '__main__':
     rules = [

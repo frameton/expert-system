@@ -37,7 +37,7 @@ def get_user_queries(params):
     while validation == False:
         print("")
         print(colors.clr.fg.yellow, "------------------------- Choose your own queries ! (ex: AEG) -------------------------")
-        print(colors.clr.fg.yellow, f"Letter(s) found in dataset: {letters_list}")
+        print(colors.clr.fg.yellow, f"Letter(s) found in dataset: {" ".join(letters_list)}")
         print("")
         queries = input("Queries: ")
         queries = queries.strip()
