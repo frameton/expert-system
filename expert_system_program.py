@@ -1,4 +1,5 @@
 from app_format_src.choose_file import choose_file
+from app_format_src.ask_customs_params import ask_customs_params
 from tools import colors
 from parsing.parsing import ex_parsing
 from parsing.custom_facts import get_user_facts
@@ -52,15 +53,6 @@ def expert_system_program(params):
 
     params = ex_parsing(params, path)
 
-    if (params['interactive_facts']):
-        params["initial_facts"] = get_user_facts(params)
-
-    if (params['interactive_queries']):
-        params["queries"] = get_user_queries(params)
-
-
-
-# execute seulement si le parsing est un reussit
     if params["parse_error"] == 0:
         engine = InferenceEngine(params["tokens"], params["initial_facts"], params["queries"])
         engine.infer_goals()
@@ -68,5 +60,20 @@ def expert_system_program(params):
 
         display_results(facts_results)
 
+        if params['interactive_facts'] or params['interactive_queries']:
+            answer_customs_params = ask_customs_params(params)
+            while answer_customs_params["customs_params_answer"] == "Yes":
+                if (params['interactive_facts']):
+                    params["initial_facts"] = get_user_facts(params)
+                if (params['interactive_queries']):
+                    params["queries"] = get_user_queries(params)
+                
+                engine = InferenceEngine(params["tokens"], params["initial_facts"], params["queries"])
+                engine.infer_goals()
+                facts_results = engine.print_facts()
+                display_results(facts_results)
+
+                answer_customs_params = ask_customs_params(params)
+                
+
     return params
-###############################################""
