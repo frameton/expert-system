@@ -43,7 +43,6 @@ def expert_system_program(params):
         if answer is None:
             if (params["tester"] == 0):
                 print(colors.clr.fg.yellow, "WARNING: no valid file found, check your datasets folder.", colors.clr.reset)
-            params["facts_results"] = None
             return params
         path = "./datasets/" + answer["datasets_file"]
     
@@ -52,7 +51,6 @@ def expert_system_program(params):
         if not os.path.exists(path):
             if (params["tester"] == 0):
                 print(colors.clr.fg.yellow, "WARNING: file not found, check your datasets folder.", colors.clr.reset)
-            params["facts_results"] = None
             return params
 
     params = ex_parsing(params, path)
@@ -62,7 +60,9 @@ def expert_system_program(params):
         engine.infer_goals()
         facts_results = engine.print_facts()
 
-        display_results(facts_results)
+        if params["tester"] == 0:
+            display_results(facts_results)
+        params["facts_results"] = false_facts
 
         if params['interactive_facts'] or params['interactive_queries']:
             answer_customs_params = ask_customs_params(params)
