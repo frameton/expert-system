@@ -6,31 +6,20 @@ from inference_engine.rule import Rule
 from inference_engine.graph import Graph
 
 class InferenceEngine():
-    def __init__(self, rules: list[list], facts: list[str], goals: list[str], print=False):
-        # self.rules: list = []
-        # self.facts: dict[str, Fact] = {fact: Fact(fact, value=True) for fact in facts}
-        # self.goals: list[Fact] = [Fact(goal, None) for goal in goals]
-        # self.facts.update({goal.name: goal for goal in self.goals})
-
+    def __init__(self, rules: list[list], facts: list[str], goals: list[str], should_print_graph=False, should_output_resolution_steps=True):
         self.graph = Graph()
         self.graph.build(rules)
         self.facts = self.graph.facts
 
+        self.should_output_resolution_steps = should_output_resolution_steps
 
         for fact in facts:
             self.facts[fact].value = True
 
         self.goals = [self.facts[goal] for goal in goals]
 
-        if print:
+        if should_print_graph:
             self.graph.print()
-
-    # TODO : point fact to rule directly and infer conditions and after the conclusion
-    # TODO : the function to infer the conclusion is different and should keep the goal in mind
-    # TODO : if the goal is children of | or ^, all other node have to be False together for the goal to be True
-    # TODO : maybe for each fact, sort the parents rules by the depth of the goal in a conclusion.
-
-
 
     def get_fact_node(self, token: str) -> Fact:
         if token not in self.facts:
@@ -41,21 +30,21 @@ class InferenceEngine():
         goals_to_infer = [goal for goal in self.goals if goal.value is None]
 
         if len(goals_to_infer) == 0:
-            print('No goals to infer')
+            self.output_resolution_step('No goals to infer')
             return
 
         inferred_goals_count = 0
         loop_count_without_improvement = 0
 
         while len(goals_to_infer) > 0 and loop_count_without_improvement < 3:
-            print('Goals to infer', len(goals_to_infer))
-            print('Attemps without improvement', loop_count_without_improvement)
+            self.output_resolution_step('Goals to infer', len(goals_to_infer))
+            self.output_resolution_step('Attemps without improvement', loop_count_without_improvement)
             for goal in goals_to_infer:
-                print('Infering goal', goal.name, '...')
+                self.output_resolution_step('Infering goal', goal.name, '...')
                 value, steps = self.__infer_fact(goal)
                 if value is not None:
                     for step in steps:
-                        print(step)
+                        self.output_resolution_step(step)
                     inferred_goals_count += 1
             if inferred_goals_count > 0:
                 loop_count_without_improvement = 0
@@ -65,8 +54,8 @@ class InferenceEngine():
             goals_to_infer = [goal for goal in goals_to_infer if goal.value is None]
 
         if loop_count_without_improvement == 3:
-            print('No more improvement')
-        print('Inference done')
+            self.output_resolution_step('No more improvement')
+        self.output_resolution_step('Inference done')
 
     def __infer_fact(self, fact: Fact) -> Tuple[bool | None, list]:
 
@@ -153,8 +142,6 @@ class InferenceEngine():
             return node.value, steps
         except:
             node.value = None
-
-            # print(f'{
 
             return None, []
 
@@ -294,8 +281,11 @@ class InferenceEngine():
         return None, []
 
     def print_facts(self):
-        # for fact in self.facts.values():
-        #     # print(fact.name, ':', fact.value)
         return self.facts.values()
+
+    def output_resolution_step(self, *elements):
+        if self.should_output_resolution_steps:
+            for el in elements:
+                print(el)
 
 
