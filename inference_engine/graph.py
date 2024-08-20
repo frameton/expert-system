@@ -58,7 +58,7 @@ class Graph():
                     operator.facts.add(child)
                 else:
                     operator.facts = operator.facts.union(child.facts)
-            print([c.name for c in operator.facts])
+            # print([c.name for c in operator.facts])
             return operator
         else:
             fact = self.get_fact(conditions)
