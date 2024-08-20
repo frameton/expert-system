@@ -41,14 +41,18 @@ def expert_system_program(params):
         answer = choose_file(path)
 
         if answer is None:
-            print(colors.clr.fg.yellow, "WARNING: no valid file found, check your datasets folder.", colors.clr.reset)
+            if (params["tester"] == 0):
+                print(colors.clr.fg.yellow, "WARNING: no valid file found, check your datasets folder.", colors.clr.reset)
+            params["facts_results"] = None
             return params
         path = "./datasets/" + answer["datasets_file"]
     
     else:
         path = params["path"]
         if not os.path.exists(path):
-            print(colors.clr.fg.yellow, "WARNING: file not found, check your datasets folder.", colors.clr.reset)
+            if (params["tester"] == 0):
+                print(colors.clr.fg.yellow, "WARNING: file not found, check your datasets folder.", colors.clr.reset)
+            params["facts_results"] = None
             return params
 
     params = ex_parsing(params, path)
