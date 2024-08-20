@@ -1,0 +1,9 @@
+# Basic NOT
+
+B + !C => A
+
+=C
+?A
+%A:False
+# Result should be
+# A:False

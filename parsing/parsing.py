@@ -237,7 +237,7 @@ def parenthese_parse(line, line_len, elt, col):
     return error, error_str
 
 
-def check_line(line, count, rules_phase, dataset_letters, reference_letters):
+def check_line(line, count, rules_phase, dataset_letters, reference_letters, params):
     col = 0
     error = 0
     error_str = ""
@@ -250,7 +250,7 @@ def check_line(line, count, rules_phase, dataset_letters, reference_letters):
     implication_operator_count = 0
 
 
-    if rules_phase == False:
+    if rules_phase == False and params["tester"] == 0:
         print("")
         print("")
         print(f"{colors.clr.fg.purple}********** RULES **********{colors.clr.reset}")
@@ -312,11 +312,12 @@ def check_line(line, count, rules_phase, dataset_letters, reference_letters):
 
 
 def check_initial_facts(line, count, comment_part, params):
-    print("")
-    print("")
-    print("")
-    print(f"{colors.clr.fg.purple}********** INITIAL FACTS **********{colors.clr.reset}")
-    print("")
+    if params["tester"] == 0:
+        print("")
+        print("")
+        print("")
+        print(f"{colors.clr.fg.purple}********** INITIAL FACTS **********{colors.clr.reset}")
+        print("")
 
     if len(line) == 1 and line[0] == '=':
         error_str = "no initial facts found."
@@ -340,11 +341,11 @@ def check_initial_facts(line, count, comment_part, params):
                     return display_error(col, error_str, count, line)
             col += 1
 
-    if params["display_comments"] == 1 and len(comment_part) > 0:
+    if params["display_comments"] == 1 and len(comment_part) > 0 and params["tester"] == 0:
         print(f"{line} {colors.clr.fg.green}\u2713{colors.clr.reset}", end="          ")
         print(f"{colors.clr.fg.darkgrey}{comment_part}{colors.clr.reset}")
     
-    else:
+    elif params["tester"] == 0:
         print(f"{line} {colors.clr.fg.green}\u2713{colors.clr.reset}")
 
     return 0
@@ -353,11 +354,12 @@ def check_initial_facts(line, count, comment_part, params):
 
 
 def check_queries(line, count, comment_part, params):
-    print("")
-    print("")
-    print("")
-    print(f"{colors.clr.fg.purple}********** QUERIES **********{colors.clr.reset}")
-    print("")
+    if params["tester"] == 0:
+        print("")
+        print("")
+        print("")
+        print(f"{colors.clr.fg.purple}********** QUERIES **********{colors.clr.reset}")
+        print("")
 
     if len(line) == 1 and line[0] == '?':
         error_str = "no queries found."
@@ -381,11 +383,11 @@ def check_queries(line, count, comment_part, params):
                     return display_error(col, error_str, count, line)
             col += 1
         
-    if params["display_comments"] == 1 and len(comment_part) > 0:
+    if params["display_comments"] == 1 and len(comment_part) > 0 and params["tester"] == 0:
         print(f"{line} {colors.clr.fg.green}\u2713{colors.clr.reset}", end="          ")
         print(f"{colors.clr.fg.darkgrey}{comment_part}{colors.clr.reset}")
     
-    else:
+    elif params["tester"] == 0:
         print(f"{line} {colors.clr.fg.green}\u2713{colors.clr.reset}")
     
     return 0
@@ -398,8 +400,9 @@ def ex_parsing(params, path):
     params["queries"] = []
     params["parse_error"] = 0
 
-    print(colors.clr.fg.yellow, f"Parsing {path}...", colors.clr.reset)
-    print("")
+    if params["tester"] == 0:
+        print(colors.clr.fg.yellow, f"Parsing {path}...", colors.clr.reset)
+        print("")
 
     file = open(path, 'r')
     tokens = []
@@ -435,23 +438,25 @@ def ex_parsing(params, path):
 
         if len(line) > 0 and line[0] == "?":
             if fact_phase == False:
-                print("")
-                print("")
-                print("")
-                print(f"{colors.clr.fg.purple}********** QUERIES **********{colors.clr.reset}")
-                print("")
-                display_error(-1, "you must initialize initials facts before queries.", count, line)
-                print("")
-                print(colors.clr.fg.red, f"{path} parse failed.", colors.clr.reset)
-                print("")
+                if params["tester"] == 0:
+                    print("")
+                    print("")
+                    print("")
+                    print(f"{colors.clr.fg.purple}********** QUERIES **********{colors.clr.reset}")
+                    print("")
+                    display_error(-1, "you must initialize initials facts before queries.", count, line)
+                    print("")
+                    print(colors.clr.fg.red, f"{path} parse failed.", colors.clr.reset)
+                    print("")
                 params["parse_error"] = 1
                 file.close()
                 return params
             if query_phase == True:
-                display_error(-1, "queries have already been initialized.", count, line)
-                print("")
-                print(colors.clr.fg.red, f"{path} parse failed.", colors.clr.reset)
-                print("")
+                if params["tester"] == 0:
+                    display_error(-1, "queries have already been initialized.", count, line)
+                    print("")
+                    print(colors.clr.fg.red, f"{path} parse failed.", colors.clr.reset)
+                    print("")
                 params["parse_error"] = 1
                 file.close()
                 return params
@@ -459,9 +464,10 @@ def ex_parsing(params, path):
                 query_phase = True
                 result = check_queries(line, count, comment_part, params)
                 if result == 1:
-                    print("")
-                    print(colors.clr.fg.red, f"{path} parse failed.", colors.clr.reset)
-                    print("")
+                    if params["tester"] == 0:
+                        print("")
+                        print(colors.clr.fg.red, f"{path} parse failed.", colors.clr.reset)
+                        print("")
                     params["parse_error"] = 1
                     file.close()
                     return params
@@ -470,10 +476,11 @@ def ex_parsing(params, path):
 
         elif len(line) > 0 and line[0] == "=":
             if fact_phase == True:
-                display_error(-1, "the initial facts have already been initialized.", count, line)
-                print("")
-                print(colors.clr.fg.red, f"{path} parse failed.", colors.clr.reset)
-                print("")
+                if params["tester"] == 0:
+                    display_error(-1, "the initial facts have already been initialized.", count, line)
+                    print("")
+                    print(colors.clr.fg.red, f"{path} parse failed.", colors.clr.reset)
+                    print("")
                 params["parse_error"] = 1
                 file.close()
                 return params
@@ -481,9 +488,10 @@ def ex_parsing(params, path):
                 fact_phase = True
                 result = check_initial_facts(line, count, comment_part, params)
                 if result == 1:
-                    print("")
-                    print(colors.clr.fg.red, f"{path} parse failed.", colors.clr.reset)
-                    print("")
+                    if params["tester"] == 0:
+                        print("")
+                        print(colors.clr.fg.red, f"{path} parse failed.", colors.clr.reset)
+                        print("")
                     params["parse_error"] = 1
                     file.close()
                     return params
@@ -492,11 +500,12 @@ def ex_parsing(params, path):
                 
 
         elif query_phase == False and fact_phase == False and len(line) > 0 and line[0] != "#":
-            result, params['dataset_letters'], reference_letters = check_line(line, count, rules_phase, params["dataset_letters"], reference_letters)
+            result, params['dataset_letters'], reference_letters = check_line(line, count, rules_phase, params["dataset_letters"], reference_letters, params)
             if result == 1:
-                print("")
-                print(colors.clr.fg.red, f"{path} parse failed.", colors.clr.reset)
-                print("")
+                if params["tester"] == 0:
+                    print("")
+                    print(colors.clr.fg.red, f"{path} parse failed.", colors.clr.reset)
+                    print("")
                 params["parse_error"] = 1
                 file.close()
                 return params
@@ -510,7 +519,7 @@ def ex_parsing(params, path):
                 tokens.append(new_list)
                 rules_phase = True
         
-        if params["display_comments"] == 1 and len(line) == 0 and len(comment_part) > 0:
+        if params["display_comments"] == 1 and len(line) == 0 and len(comment_part) > 0 and params["tester"] == 0:
             print("")
             print(f"{colors.clr.fg.darkgrey}{comment_part}{colors.clr.reset}")
             print("")
@@ -519,10 +528,11 @@ def ex_parsing(params, path):
     params["tokens"] = tokens
     params["initial_facts"] = facts
     params["queries"] = query
-    print("")
-    print("")
-    print("")
-    print(colors.clr.fg.green, f"{path} parse success !", colors.clr.reset)
-    print("")
+    if params["tester"] == 0:
+        print("")
+        print("")
+        print("")
+        print(colors.clr.fg.green, f"{path} parse success !", colors.clr.reset)
+        print("")
     file.close()
     return params

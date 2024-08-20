@@ -1,0 +1,8 @@
+A + B => C
+
+=AB
+?C
+
+%C:True
+# Result should be
+# C:True

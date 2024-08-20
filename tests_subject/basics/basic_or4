@@ -1,0 +1,11 @@
+# Basic OR
+
+B + C => A
+D | E => B
+B     => C
+
+=DE
+?A
+%A:True
+# Result should be
+# A:True

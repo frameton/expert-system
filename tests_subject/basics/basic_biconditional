@@ -1,0 +1,9 @@
+# Basic Biconditional
+
+A <=> B
+
+=B
+?A
+%A:True
+# Result should be
+# A:True

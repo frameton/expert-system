@@ -1,0 +1,11 @@
+# Parentheses
+
+ A | B  + C => E
+(F | G) + H => E
+
+
+=F
+?E
+%E:False
+# Result should be
+# E:False

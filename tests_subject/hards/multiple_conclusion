@@ -1,0 +1,10 @@
+# Multiple same conclusion rule
+
+B => A
+C => A
+
+=
+?A
+%A:False
+# Result should be
+# A:False

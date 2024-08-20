@@ -1,0 +1,10 @@
+# Basic AND conclusion
+
+A => B + C
+
+=A
+?BC
+%B:True,C:True
+# Result should be
+# B:True
+# C:True
