@@ -30,16 +30,17 @@ def create_tokens(line, count, params, comment_part):
     if new_list == 1:
         return 1
     
-    print(f"{line} {colors.clr.fg.green}\u2713{colors.clr.reset}", end="          ")
+    if params["tester"] == 0:
+        print(f"{line} {colors.clr.fg.green}\u2713{colors.clr.reset}", end="          ")
 
-    if params["display_comments"] == 1 and len(comment_part) > 0:
+    if params["display_comments"] == 1 and len(comment_part) > 0 and params["tester"] == 0:
         print(f"{colors.clr.fg.darkgrey}{comment_part}{colors.clr.reset}", end="          ")
 
     if params["display_nested_list"] == 1:
         print("")
         print(f"{colors.clr.fg.blue}\u2192 {new_list}{colors.clr.reset}")
     
-    
-    print("")
+    if params["tester"] == 0:
+        print("")
     
     return new_list

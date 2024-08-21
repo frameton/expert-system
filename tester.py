@@ -13,6 +13,7 @@ def set_params_for_tester(params):
     params["interactive_facts"] = 0
     params["interactive_queries"] = 0
     params["tester"] = 1
+    params["facts_results"] = None
     return params
 
 if __name__ == "__main__":
@@ -41,24 +42,41 @@ if __name__ == "__main__":
             hards.append(elt)
         break
 
-    for basic in basics:
-        print(basic)
+    # for basic in basics:
+    #     print(basic)
 
-    print()
-    print()
+    # print()
+    # print()
 
-    for error in errors:
-        print(error)
+    # for error in errors:
+    #     print(error)
 
-    print()
-    print()
+    # print()
+    # print()
 
-    for hard in hards:
-        print(hard)
+    # for hard in hards:
+    #     print(hard)
 
-    exit()
 
-    params["path"]
+    params["path"] = "./tests_subject/basics/basic_and2"
     params = expert_system_program(params)
+
+    tab = []
+    for fact in params["facts_results"]:
+        tab2 = []
+        tab2.append(fact.name)
+        if fact.value == False:
+            tab2.append(False)
+        elif fact.value == True:
+            tab2.append(True)
+        # else:
+        #     none_facts.append(fact.name)
+        tab.append(tab2)
+    
+    sort1 = sorted(params["tester_reference"])
+    sort2 = sorted(tab)
+
+    print(sort1)
+    print(sort2)
 
     exit()

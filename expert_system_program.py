@@ -56,15 +56,18 @@ def expert_system_program(params):
     params = ex_parsing(params, path)
 
     if params["parse_error"] == 0:
-        engine = InferenceEngine(params["tokens"], params["initial_facts"], params["queries"])
+        if params["tester"] == 1:
+            engine = InferenceEngine(params["tokens"], params["initial_facts"], params["queries"], False, False)
+        else:
+            engine = InferenceEngine(params["tokens"], params["initial_facts"], params["queries"])
         engine.infer_goals()
         facts_results = engine.print_facts()
 
         if params["tester"] == 0:
             display_results(facts_results)
-        params["facts_results"] = false_facts
+        params["facts_results"] = facts_results
 
-        if params['interactive_facts'] or params['interactive_queries']:
+        if params['interactive_facts'] or params['interactive_queries'] and params["tester"] == 0:
             answer_customs_params = ask_customs_params(params)
             while answer_customs_params["customs_params_answer"] == "Yes":
                 if (params['interactive_facts']):

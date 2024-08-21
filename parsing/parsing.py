@@ -10,6 +10,7 @@ def define_elt_type(elt):
     negative = ['!']
     operators = ['<', '=', '>', "+", '|', '^']
     parentheses = ['(', ')']
+    
     if (elt in letters) is True:
         return True, False, False, False, False
     elif (elt in negative) is True:
@@ -262,17 +263,17 @@ def check_line(line, count, rules_phase, dataset_letters, reference_letters, par
 
         if is_invalid:
             error_str = "invalid character found."
-            return display_error(col, error_str, count, line)
+            return display_error(col, error_str, count, line), dataset_letters, reference_letters
 
         if col == 0:
             if is_letter is False and elt != '(' and elt != '!':
                 error_str = "rules must begin by a letter, negative symbole or opening parenthesis."
-                return display_error(col, error_str, count, line)
+                return display_error(col, error_str, count, line), dataset_letters, reference_letters
         
         if is_letter is True:
             error, error_str = letter_parse(line, line_len, elt, col)
             if error == 1:
-                return display_error(col, error_str, count, line)
+                return display_error(col, error_str, count, line), dataset_letters, reference_letters
             else:
                 if (elt in reference_letters) == True:
                     index = reference_letters.remove(elt)
@@ -281,7 +282,7 @@ def check_line(line, count, rules_phase, dataset_letters, reference_letters, par
         if is_negative is True:
             error, error_str = negative_parse(line, line_len, elt, col)
             if error == 1:
-                return display_error(col, error_str, count, line)
+                return display_error(col, error_str, count, line), dataset_letters, reference_letters
         
         if is_operator is True:
             # if elt == '=':
@@ -290,23 +291,23 @@ def check_line(line, count, rules_phase, dataset_letters, reference_letters, par
             #     return display_error(col, "duplicate detected for implication operator.", count, line)
             error, error_str = operator_parse(line, line_len, elt, col)
             if error == 1:
-                return display_error(col, error_str, count, line)
+                return display_error(col, error_str, count, line), dataset_letters, reference_letters
         
         if is_parenthese is True:
             error, error_str = parenthese_parse(line, line_len, elt, col)
             if error == 1:
-                return display_error(col, error_str, count, line)
+                return display_error(col, error_str, count, line), dataset_letters, reference_letters
         
         col += 1
     
     if ("=>" in line) is False and ("<=>" in line) is False:
         error = 1
         error_str = "=> or <=> not find in rule."
-        return display_error(-1, error_str, count, line)
+        return display_error(-1, error_str, count, line), dataset_letters, reference_letters
 
     line = check_parenthese(line, count)
     if line == 1:
-        return 1, datasets_letters
+        return 1, datasets_letters, reference_letters
 
     return 0, dataset_letters, reference_letters
 
@@ -393,6 +394,22 @@ def check_queries(line, count, comment_part, params):
     return 0
 
 
+def get_tester_reference(line, params):
+    tester_reference = []
+
+    line = line[1:]
+    tab = line.split(",")
+    for elt in tab:
+        arr = []
+        elt2 = elt.split(":")
+        if elt2[1] == "True":
+            elt2[1] = True
+        elif elt2[1] == "False":
+            elt2[1] = False 
+        tester_reference.append(elt2)
+    return tester_reference
+
+
 def ex_parsing(params, path):
     params["dataset_letters"] = []
     params["tokens"] = []
@@ -411,6 +428,7 @@ def ex_parsing(params, path):
     rules_phase = False
     fact_phase = False
     query_phase = False
+    tester_phase = False
     comment_part = ""
     reference_letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
  
@@ -518,6 +536,10 @@ def ex_parsing(params, path):
 
                 tokens.append(new_list)
                 rules_phase = True
+
+        elif query_phase == True and fact_phase == True and rules_phase == True and tester_phase == False and len(line) > 0 and line[0] == "%" and params["tester"] == 1:
+            params["tester_reference"] = get_tester_reference(line, params)
+            tester_phase = True
         
         if params["display_comments"] == 1 and len(line) == 0 and len(comment_part) > 0 and params["tester"] == 0:
             print("")
