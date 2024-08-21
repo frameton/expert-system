@@ -263,17 +263,17 @@ def check_line(line, count, rules_phase, dataset_letters, reference_letters, par
 
         if is_invalid:
             error_str = "invalid character found."
-            return display_error(col, error_str, count, line), dataset_letters, reference_letters
+            return display_error(col, error_str, count, line, params["tester"]), dataset_letters, reference_letters
 
         if col == 0:
             if is_letter is False and elt != '(' and elt != '!':
                 error_str = "rules must begin by a letter, negative symbole or opening parenthesis."
-                return display_error(col, error_str, count, line), dataset_letters, reference_letters
+                return display_error(col, error_str, count, line, params["tester"]), dataset_letters, reference_letters
         
         if is_letter is True:
             error, error_str = letter_parse(line, line_len, elt, col)
             if error == 1:
-                return display_error(col, error_str, count, line), dataset_letters, reference_letters
+                return display_error(col, error_str, count, line, params["tester"]), dataset_letters, reference_letters
             else:
                 if (elt in reference_letters) == True:
                     index = reference_letters.remove(elt)
@@ -282,7 +282,7 @@ def check_line(line, count, rules_phase, dataset_letters, reference_letters, par
         if is_negative is True:
             error, error_str = negative_parse(line, line_len, elt, col)
             if error == 1:
-                return display_error(col, error_str, count, line), dataset_letters, reference_letters
+                return display_error(col, error_str, count, line, params["tester"]), dataset_letters, reference_letters
         
         if is_operator is True:
             # if elt == '=':
@@ -291,23 +291,23 @@ def check_line(line, count, rules_phase, dataset_letters, reference_letters, par
             #     return display_error(col, "duplicate detected for implication operator.", count, line)
             error, error_str = operator_parse(line, line_len, elt, col)
             if error == 1:
-                return display_error(col, error_str, count, line), dataset_letters, reference_letters
+                return display_error(col, error_str, count, line, params["tester"]), dataset_letters, reference_letters
         
         if is_parenthese is True:
             error, error_str = parenthese_parse(line, line_len, elt, col)
             if error == 1:
-                return display_error(col, error_str, count, line), dataset_letters, reference_letters
+                return display_error(col, error_str, count, line, params["tester"]), dataset_letters, reference_letters
         
         col += 1
     
     if ("=>" in line) is False and ("<=>" in line) is False:
         error = 1
         error_str = "=> or <=> not find in rule."
-        return display_error(-1, error_str, count, line), dataset_letters, reference_letters
+        return display_error(-1, error_str, count, line, params["tester"]), dataset_letters, reference_letters
 
-    line = check_parenthese(line, count)
+    line = check_parenthese(line, count, params["tester"])
     if line == 1:
-        return 1, datasets_letters, reference_letters
+        return 1, dataset_letters, reference_letters
 
     return 0, dataset_letters, reference_letters
 
@@ -322,7 +322,7 @@ def check_initial_facts(line, count, comment_part, params):
 
     if len(line) == 1 and line[0] == '=':
         error_str = "no initial facts found."
-        return display_error(-1, error_str, count, line)
+        return display_error(-1, error_str, count, line, params["tester"])
 
     else:
         letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
@@ -339,7 +339,7 @@ def check_initial_facts(line, count, comment_part, params):
                     pass
                 else:
                     error_str = "invalid character for initial facts."
-                    return display_error(col, error_str, count, line)
+                    return display_error(col, error_str, count, line, params["tester"])
             col += 1
 
     if params["display_comments"] == 1 and len(comment_part) > 0 and params["tester"] == 0:
@@ -364,7 +364,7 @@ def check_queries(line, count, comment_part, params):
 
     if len(line) == 1 and line[0] == '?':
         error_str = "no queries found."
-        return display_error(-1, error_str, count, line)
+        return display_error(-1, error_str, count, line, params["tester"])
 
     else:
         letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
@@ -381,7 +381,7 @@ def check_queries(line, count, comment_part, params):
                     pass
                 else:
                     error_str = "invalid character for queries."
-                    return display_error(col, error_str, count, line)
+                    return display_error(col, error_str, count, line, params["tester"])
             col += 1
         
     if params["display_comments"] == 1 and len(comment_part) > 0 and params["tester"] == 0:
@@ -462,7 +462,7 @@ def ex_parsing(params, path):
                     print("")
                     print(f"{colors.clr.fg.purple}********** QUERIES **********{colors.clr.reset}")
                     print("")
-                    display_error(-1, "you must initialize initials facts before queries.", count, line)
+                    display_error(-1, "you must initialize initials facts before queries.", count, line, params["tester"])
                     print("")
                     print(colors.clr.fg.red, f"{path} parse failed.", colors.clr.reset)
                     print("")
@@ -471,7 +471,7 @@ def ex_parsing(params, path):
                 return params
             if query_phase == True:
                 if params["tester"] == 0:
-                    display_error(-1, "queries have already been initialized.", count, line)
+                    display_error(-1, "queries have already been initialized.", count, line, params["tester"])
                     print("")
                     print(colors.clr.fg.red, f"{path} parse failed.", colors.clr.reset)
                     print("")
@@ -495,7 +495,7 @@ def ex_parsing(params, path):
         elif len(line) > 0 and line[0] == "=":
             if fact_phase == True:
                 if params["tester"] == 0:
-                    display_error(-1, "the initial facts have already been initialized.", count, line)
+                    display_error(-1, "the initial facts have already been initialized.", count, line, params["tester"])
                     print("")
                     print(colors.clr.fg.red, f"{path} parse failed.", colors.clr.reset)
                     print("")

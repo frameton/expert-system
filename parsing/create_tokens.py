@@ -26,7 +26,7 @@ def create_tokens(line, count, params, comment_part):
     new_list = create_operators_nested_lists(new_list)
     new_list = check_negative_symbole_nested_lists(new_list)
     new_list = check_inutiles_parentheses(new_list)
-    new_list = check_principal_implication_opearator(new_list, count, line)
+    new_list = check_principal_implication_opearator(new_list, count, line, params["tester"])
     if new_list == 1:
         return 1
     

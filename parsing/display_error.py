@@ -1,7 +1,10 @@
 from tools import colors
 
 
-def display_error(col, error_str, count, line):
+def display_error(col, error_str, count, line, tester):
+    if tester == 1:
+        return 1
+
     str_count = str(count)
     str_col = str(col)
     if col == -1:

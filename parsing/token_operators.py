@@ -89,9 +89,9 @@ def create_implication_operators_nested_lists(new_list):
     return new_list
 
 
-def check_principal_implication_opearator(new_list, count, line):
+def check_principal_implication_opearator(new_list, count, line, tester):
     for elt in new_list:
         if type(elt) is str and (elt == "=>" or elt == "<=>"):
             return new_list
         
-    return display_error(-1, "Principal implication operator not found in rule.", count, line)
+    return display_error(-1, "Principal implication operator not found in rule.", count, line, tester)

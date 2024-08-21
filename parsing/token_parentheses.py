@@ -1,7 +1,8 @@
 from tools import colors
+from parsing.display_error import display_error
 
 
-def check_parenthese(line, count):
+def check_parenthese(line, count, tester):
     parenthese = 0
     col = 0
     line = line.strip()
@@ -15,13 +16,13 @@ def check_parenthese(line, count):
         if elt == ')':
             if parenthese == 0:
                 error_str = "Parenthesis error."
-                return display_error(col, error_str, count, line)
+                return display_error(col, error_str, count, line, tester)
             parenthese -= 1
         col += 1
     
     if parenthese != 0:
         error_str = "Parenthesis error."
-        return display_error(-2, error_str, count, line)
+        return display_error(-2, error_str, count, line, tester)
 
 
     _match = []
