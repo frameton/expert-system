@@ -13,8 +13,11 @@ class InferenceEngine():
 
         self.should_output_resolution_steps = should_output_resolution_steps
 
-        for fact in facts:
-            self.facts[fact].value = True
+        for fact in self.facts.values():
+            if len(fact.parents) == 0:
+                fact.value = False
+            if fact.name in facts:
+                fact.value = True
 
         self.goals = [self.facts[goal] for goal in goals]
 
@@ -72,6 +75,7 @@ class InferenceEngine():
 
     def __infer_fact_from_rule(self, goal: Fact, rule: Rule) -> Tuple[bool | None, list]:
 
+
         steps = ['Infering from rule ' + rule.name]
         rule.visited = True
         cond_value, cond_steps = self.__infer_conditions(rule.conditions)
@@ -92,6 +96,7 @@ class InferenceEngine():
         if isinstance(conditions, Fact):
             value, steps = self.__infer_fact(conditions)
             return conditions.value, steps
+
 
         node: Operator = conditions
         steps = ['Infering ' + node.name]
