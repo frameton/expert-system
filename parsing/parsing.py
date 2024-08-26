@@ -321,8 +321,9 @@ def check_initial_facts(line, count, comment_part, params):
         print("")
 
     if len(line) == 1 and line[0] == '=':
-        error_str = "no initial facts found."
-        return display_error(-1, error_str, count, line, params["tester"])
+        # error_str = "no initial facts found."
+        # return display_error(-1, error_str, count, line, params["tester"])
+        return 0
 
     else:
         letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
@@ -363,8 +364,9 @@ def check_queries(line, count, comment_part, params):
         print("")
 
     if len(line) == 1 and line[0] == '?':
-        error_str = "no queries found."
-        return display_error(-1, error_str, count, line, params["tester"])
+        # error_str = "no queries found."
+        # return display_error(-1, error_str, count, line, params["tester"])
+        return 0
 
     else:
         letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
@@ -546,6 +548,27 @@ def ex_parsing(params, path):
             print(f"{colors.clr.fg.darkgrey}{comment_part}{colors.clr.reset}")
             print("")
 
+    if fact_phase == False:
+        if params["tester"] == 0:
+            print("")
+            print(colors.clr.fg.red, f"Parsing error: the initial facts must be initialized.", colors.clr.reset)
+            print("")
+            print(colors.clr.fg.red, f"{path} parse failed.", colors.clr.reset)
+            print("")
+        params["parse_error"] = 1
+        file.close()
+        return params
+
+    if query_phase == False:
+        if params["tester"] == 0:
+            print("")
+            print(colors.clr.fg.red, f"Parsing error: queries must be initialized.", colors.clr.reset)
+            print("")
+            print(colors.clr.fg.red, f"{path} parse failed.", colors.clr.reset)
+            print("")
+        params["parse_error"] = 1
+        file.close()
+        return params
     
     params["tokens"] = tokens
     params["initial_facts"] = facts

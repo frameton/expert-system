@@ -59,12 +59,10 @@ def tester_mode():
             for fact in params["facts_results"]:
                 tab2 = []
                 tab2.append(fact.name)
-                if fact.value == False:
+                if fact.value == False or fact.value == None:
                     tab2.append(False)
                 elif fact.value == True:
                     tab2.append(True)
-                else:
-                    tab2.append(fact.value)
                 total_facts_results.append(tab2)
                 if fact.name in params["queries"]:
                     facts_results.append(tab2)
@@ -119,12 +117,10 @@ def tester_mode():
             for fact in params["facts_results"]:
                 tab2 = []
                 tab2.append(fact.name)
-                if fact.value == False:
+                if fact.value == False or fact.value == None:
                     tab2.append(False)
                 elif fact.value == True:
                     tab2.append(True)
-                else:
-                    tab2.append(fact.value)
                 total_facts_results.append(tab2)
                 if fact.name in params["queries"]:
                     facts_results.append(tab2)
