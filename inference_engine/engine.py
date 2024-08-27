@@ -13,6 +13,10 @@ class InferenceEngine():
 
         self.should_output_resolution_steps = should_output_resolution_steps
 
+        for fact in facts:
+            if fact not in self.facts:
+                self.facts[fact] = Fact(fact, True)
+
         for fact in self.facts.values():
             if len(fact.parents) == 0:
                 fact.value = False
@@ -22,9 +26,6 @@ class InferenceEngine():
         for goal in goals:
             if goal not in self.facts:
                 self.facts[goal] = Fact(goal)
-        for fact in facts:
-            if fact not in self.facts:
-                self.facts[fact] = Fact(fact, True)
 
         self.goals = [self.facts[goal] for goal in goals if goal in self.facts]
 
