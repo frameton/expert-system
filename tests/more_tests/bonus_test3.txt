@@ -1,0 +1,13 @@
+B     => A
+D + E => B
+G + H => F
+I + J => G
+G     => H
+L + M => K
+O => G
+O | G <=> L + N
+N ^ G  <=> M | I
+G => N ^ I
+
+=DEIJP
+?AFKP
