@@ -24,7 +24,7 @@ class InferenceEngine():
                 self.facts[goal] = Fact(goal)
         for fact in facts:
             if fact not in self.facts:
-                self.facts[fact] = Fact(fact)
+                self.facts[fact] = Fact(fact, True)
 
         self.goals = [self.facts[goal] for goal in goals if goal in self.facts]
 
