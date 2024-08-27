@@ -19,7 +19,14 @@ class InferenceEngine():
             if fact.name in facts:
                 fact.value = True
 
-        self.goals = [self.facts[goal] for goal in goals]
+        for goal in goals:
+            if goal not in self.facts:
+                self.facts[goal] = Fact(goal)
+        for fact in facts:
+            if fact not in self.facts:
+                self.facts[fact] = Fact(fact)
+
+        self.goals = [self.facts[goal] for goal in goals if goal in self.facts]
 
         if should_print_graph:
             self.graph.print()
