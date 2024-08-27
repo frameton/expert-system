@@ -42,6 +42,13 @@ def tester_mode():
             hards.append(elt)
         break
 
+    crashs = []
+    path = "./tester_src/crashs"
+    for (path, dirnames, filenames) in walk(path):
+        for elt in filenames:
+            crashs.append(elt)
+        break
+
     print(colors.clr.fg.cyan, "######################## Expert-System Tester ###########################", colors.clr.reset)
     print("")
     print("")
@@ -163,6 +170,7 @@ def tester_mode():
     for error in errors:
         params = set_params_for_tester(params)
         params["path"] = "./tester_src/errors/" + error
+        print(params["path"])
         params = expert_system_program(params)
 
         if params["parse_error"] == 1:
@@ -174,3 +182,18 @@ def tester_mode():
             print(f"{colors.clr.fg.lightred}|{colors.clr.reset} ./tester_src/errors/{error} {colors.clr.fg.lightred}\u2717{colors.clr.reset}")
             print(f"{colors.clr.fg.lightred}|{colors.clr.reset}     An error is expected and the program don't return an error.")
             print("")
+
+
+    print("")
+    print("")
+    print(colors.clr.fg.cyan, "******************** Crash tests ********************", colors.clr.reset)
+    print("")
+    for crash in crashs:
+        params = set_params_for_tester(params)
+        params["path"] = "./tester_src/crashs/" + crash
+        #print(params["path"])
+        params = expert_system_program(params)
+
+        print(f"{colors.clr.fg.green}|{colors.clr.reset} ./tester_src/crashs/{crash} {colors.clr.fg.green}\u2713{colors.clr.reset}")
+        print(f"{colors.clr.fg.green}|{colors.clr.reset}     No crash.")
+        print("")
