@@ -4,8 +4,8 @@ A + B <=> C | D
 
 =D
 ?ABC
-%A:True,B:True,C:True
+%A:True,B:True,C:False
 # Result should be
 # A:True
 # B:True
-# C:True
+# C:False
